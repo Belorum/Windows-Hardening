@@ -1,0 +1,9 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows Script Host\Settings]
+;Disables Current Users ability to use Windows Script Host
+"Enabled"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Script Host\Settings]
+;Disables All Users abiility to use Windows Script Host
+"Enabled"=dword:00000000
