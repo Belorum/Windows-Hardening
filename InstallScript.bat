@@ -1,9 +1,21 @@
 @echo off
 
-wmic.exe /Namespace:\\root\default Path SystemRestore Call CreateRestorePoint "Restore Point Before Harding", 100, 7
+REM Checks to see if the Operating Systems is 32 or 64 Bit
+REG QUERY "HKLM\Hardware\Description\System\CentralProcessor\0" | find /i "x86" > NUL && set OS=32 || set OS=64
+
+REM Enables System Restore for the "C:\" drive
+powershell "enable-computerrestore -drive 'C:\'"
+
+REM Creates Restore Point
+wmic.exe /Namespace:\\root\default Path SystemRestore Call CreateRestorePoint "Restore Point Before Hardening", 100, 7
 echo.
 
-REG QUERY "HKLM\Hardware\Description\System\CentralProcessor\0" | find /i "x86" > NUL && set OS=32 || set OS=64
+REM Sets Powershells Execution Policy for LocalMachine to Restricted
+powershell "Set-ExecutionPolicy -ExecutionPolicy RESTRICTED -Force"
+
+echo Powershell Scope and Execution Policy
+powershell "Get-ExecutionPolicy -list"
+echo.
 
 if %OS%==32 (
 
@@ -18,7 +30,7 @@ if %OS%==32 (
   echo ---------------------------------------
   REG IMPORT "%~dp0Registry Items\DDEAUTO" /reg:32
   echo.
-  )
+)
 if %OS%==64 (
 
   REM Disables Script files from using Windows Script Host
@@ -32,7 +44,7 @@ if %OS%==64 (
   echo ---------------------------------------
   REG IMPORT "%~dp0Registry Items\DDEAUTO.reg" /reg:64
   echo.
-  )
+)
 
 REM Disable Windows Guest Account
 echo Disabling Windows Guest Account
@@ -41,6 +53,7 @@ net user guest /active:no
 
 echo Starting Bad Rabbit Ransomware Prevention
 echo -----------------------------------------
-CALL "%~dp0Ransomware Prevention\Badrabbit Prevention.bat"
+CALL "%~dp0Scripts\Ransomware Prevention\Badrabbit Prevention.bat"
+echo.
 
 pause
