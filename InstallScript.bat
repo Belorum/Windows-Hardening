@@ -56,4 +56,9 @@ echo -----------------------------------------
 CALL "%~dp0Scripts\Ransomware Prevention\Badrabbit Prevention.bat"
 echo.
 
+echo Starting Petya/NotPetya/SortaPetya/Petna Prevention
+echo ---------------------------------------------------
+CALL "%~dp0Scripts\Ransomware Prevention\nopetyavac.bat"
+echo.
+
 pause
