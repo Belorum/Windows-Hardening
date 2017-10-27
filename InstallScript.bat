@@ -22,6 +22,27 @@ if %errorlevel% == 0 (
     powershell "Get-ExecutionPolicy -list"
     echo.
 
+    REM Disables IPv6 via Powershell
+
+    echo Disabling IPv6
+    echo --------------
+
+    REM Disables Ethernet IPv6
+    powershell "disable-netadapterbinding -name "Ethernet" -Componentid ms_tcpip6"
+
+    REM Disables Ethernet 2 IPv6
+    powershell ""disable-netadapterbinding -name 'Ethernet 2' -Componentid ms_tcpip6""
+
+    REM Disables Wifi IPv6
+    powershell "disable-netadapterbinding -name "Wi-Fi" -Componentid ms_tcpip6"
+
+    REM Disables Bluetooth IPv6
+    powershell ""disable-netadapterbinding -name 'Bluetooth Network Connection' -Componentid ms_tcpip6""
+    echo.
+
+    REM Lists IPv6 Adapters
+    powershell "Get-NetAdapterBinding -ComponentID ms_tcpip6"
+
       if %OS%==32 (
 
         REM Disables Script files from using Windows Script Host
