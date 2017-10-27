@@ -5,7 +5,7 @@ REM Batch file created by Lawrence Abrams of BleepingComputer.com. @bleepincompu
 
 echo Administrative permissions required. Detecting permissions...
 echo.
-		
+
 net session >nul 2>&1
 
 if %errorLevel% == 0 (
@@ -27,5 +27,3 @@ if %errorLevel% == 0 (
 ) else (
 	echo Failure: You must run this batch file as Administrator.
 )
-  
-pause
