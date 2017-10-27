@@ -1,5 +1,7 @@
 @echo off
 
+REM Batch file created by John Davis @John_Davis
+
 REM Checks to see if running as Administrator
 net session >nul 2>&1
 
@@ -16,6 +18,8 @@ if %errorlevel% == 0 (
     echo.
 
     REM Sets Powershells Execution Policy for LocalMachine to Restricted
+    echo Restricting Powershell Execution Policy on LocalMachine
+    echo -------------------------------------------------------
     powershell "Set-ExecutionPolicy -ExecutionPolicy RESTRICTED -Force"
 
     echo Powershell Scope and Execution Policy
@@ -42,6 +46,15 @@ if %errorlevel% == 0 (
 
     REM Lists IPv6 Adapters
     powershell "Get-NetAdapterBinding -ComponentID ms_tcpip6"
+    echo.
+
+    REM Changes all Networks to Public
+    powershell "Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Public"
+    powershell "Get-NetConnectionProfile"
+
+    REM Creates a Scheduled Task that sets all networks to public whenever a new connection is made
+    CALL "%~dp0Scripts\SetNetworkToPublic\SetNetworkToPublic.bat"
+    echo.
 
       if %OS%==32 (
 
@@ -90,5 +103,5 @@ if %errorlevel% == 0 (
 
 ) else (
   echo This script must be run as an administrator.
-)
+  )
 pause
