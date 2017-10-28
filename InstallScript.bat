@@ -17,17 +17,19 @@ if %errorlevel% == 0 (
     wmic.exe /Namespace:\\root\default Path SystemRestore Call CreateRestorePoint "Restore Point Before Hardening", 100, 7
     echo.
 
-    REM Sets Powershells Execution Policy for LocalMachine to Restricted
-    echo Restricting Powershell Execution Policy on LocalMachine
+    REM Sets PowerShells Execution Policy for LocalMachine to Restricted
+    echo Restricting PowerShell Execution Policy on LocalMachine
     echo -------------------------------------------------------
     powershell "Set-ExecutionPolicy -ExecutionPolicy RESTRICTED -Force"
 
-    echo Powershell Scope and Execution Policy
+    echo PowerShell Scope and Execution Policy
     powershell "Get-ExecutionPolicy -list"
     echo.
 
-    REM Disables IPv6 via Powershell
+    REM Disable PowerShell V2
+    powershell "Disable-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2"
 
+    REM Disables IPv6 via Powershell
     echo Disabling IPv6
     echo --------------
 
@@ -42,49 +44,22 @@ if %errorlevel% == 0 (
 
     REM Disables Bluetooth IPv6
     powershell ""disable-netadapterbinding -name 'Bluetooth Network Connection' -Componentid ms_tcpip6""
-    echo.
 
     REM Lists IPv6 Adapters
     powershell "Get-NetAdapterBinding -ComponentID ms_tcpip6"
     echo.
 
     REM Changes all Networks to Public
+    echo Changing All Networks to Public
+    echo -------------------------------
     powershell "Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Public"
     powershell "Get-NetConnectionProfile"
 
     REM Creates a Scheduled Task that sets all networks to public whenever a new connection is made
+    echo Adding Task to set all Networks to Public - Repeats when connecting to a network
+    echo --------------------------------------------------------------------------------
     CALL "%~dp0Scripts\SetNetworkToPublic\SetNetworkToPublic.bat"
     echo.
-
-      if %OS%==32 (
-
-        REM Disables Script files from using Windows Script Host
-        echo Disabling Windows Script Host
-        echo -----------------------------
-        REG IMPORT "%~dp0Registry Items\Disable Windows Script Host" /reg:32
-        echo.
-
-        REM DDEAUTO in Microsoft Office to prevent DDEAUTO Attacks
-        echo Disabling DDEAUTO from Microsoft Office
-        echo ---------------------------------------
-        REG IMPORT "%~dp0Registry Items\DDEAUTO" /reg:32
-        echo.
-      )
-
-      if %OS%==64 (
-
-        REM Disables Script files from using Windows Script Host
-        echo Disabling Windows Script Host
-        echo -----------------------------
-        REG IMPORT "%~dp0Registry Items\Disable Windows Script Host.reg" /reg:64
-        echo.
-
-        REM Disable DDEAUTO in Microsoft Office to prevent DDEAUTO Attacks
-        echo Disabling DDEAUTO from Microsoft Office
-        echo ---------------------------------------
-        REG IMPORT "%~dp0Registry Items\DDEAUTO.reg" /reg:64
-        echo.
-      )
 
     REM Disable Windows Guest Account
     echo Disabling Windows Guest Account
@@ -101,6 +76,36 @@ if %errorlevel% == 0 (
     CALL "%~dp0Scripts\Ransomware Prevention\nopetyavac.bat"
     echo.
 
+    REM Imports Registry Keys based on Operating System Bit Rate
+    if %OS%==32 (
+
+      REM Disables Script files from using Windows Script Host
+      echo Disabling Windows Script Host
+      echo -----------------------------
+      REG IMPORT "%~dp0Registry Items\Disable Windows Script Host" /reg:32
+      echo.
+
+      REM DDEAUTO in Microsoft Office to prevent DDEAUTO Attacks
+      echo Disabling DDEAUTO from Microsoft Office
+      echo ---------------------------------------
+      REG IMPORT "%~dp0Registry Items\DDEAUTO" /reg:32
+      echo.
+    )
+
+    if %OS%==64 (
+
+      REM Disables Script files from using Windows Script Host
+      echo Disabling Windows Script Host
+      echo -----------------------------
+      REG IMPORT "%~dp0Registry Items\Disable Windows Script Host.reg" /reg:64
+      echo.
+
+      REM Disable DDEAUTO in Microsoft Office to prevent DDEAUTO Attacks
+      echo Disabling DDEAUTO from Microsoft Office
+      echo ---------------------------------------
+      REG IMPORT "%~dp0Registry Items\DDEAUTO.reg" /reg:64
+      echo.
+    )
 ) else (
   echo This script must be run as an administrator.
   )
