@@ -93,6 +93,11 @@ if %errorlevel% == 0 (
       echo ---------------------------------------
       REG IMPORT "%~dp0Registry Items\DDEAUTO" /reg:32
       echo.
+
+      REM Disables WDigest Clear Text Passwords that Mimikatz uses
+      echo Disabling WDigest from using clear text passwords in memory
+      echo -----------------------------------------------------------
+      REG IMPORT "%~dp0Registry Items\Disable_WDigest" /reg:32
     )
 
     if %OS%==64 (
@@ -108,6 +113,11 @@ if %errorlevel% == 0 (
       echo ---------------------------------------
       REG IMPORT "%~dp0Registry Items\DDEAUTO.reg" /reg:64
       echo.
+
+      REM Disables WDigest Clear Text Passwords that Mimikatz uses
+      echo Disabling WDigest from using clear text passwords in memory
+      echo -----------------------------------------------------------
+      REG IMPORT "%~dp0Registry Items\Disable_WDigest" /reg:64
     )
 ) else (
   echo This script must be run as an administrator.
