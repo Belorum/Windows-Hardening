@@ -10,6 +10,9 @@ if %errorlevel% == 0 (
     REM Checks to see if the Operating Systems is 32 or 64 Bit
     REG QUERY "HKLM\Hardware\Description\System\CentralProcessor\0" | find /i "x86" > NUL && set OS=32 || set OS=64
 
+    REM Temporarily adds PowerShell path to path in case it is not already
+    path %path%;C:\Windows\System32\WindowsPowerShell\v1.0
+
     REM Enables System Restore for the "C:\" drive
     powershell "enable-computerrestore -drive 'C:\'"
 
